@@ -1,5 +1,0 @@
-1) add gallery of pics (for eg: iaif judge pics)
-2) add read more in previously
-3) add features/random if you want
-4) change image size on phones
-5) add the other things you have done in a random section if you want
