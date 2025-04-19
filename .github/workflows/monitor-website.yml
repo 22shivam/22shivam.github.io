@@ -1,0 +1,31 @@
+name: Monitor Website Uptime
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'    # every 5 minutes
+  workflow_dispatch:        # also allow manual trigger
+
+jobs:
+  check-up:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check website status
+        id: ping
+        run: |
+          URL="https://shivamg.com"
+          status=$(curl -o /dev/null -s -w "%{http_code}" "$URL")
+          echo "status=$status" >> $GITHUB_OUTPUT
+
+      - name: Create an issue if the site is down
+        if: steps.ping.outputs.status != '200'
+        uses: peter-evans/create-issue@v5
+        with:
+          title: 🚨 Website down: status ${{ steps.ping.outputs.status }}
+          body: |
+            **Failure detected**  
+            • **URL:** https://your-site.example.com  
+            • **Status code:** ${{ steps.ping.outputs.status }}  
+            • **Time (UTC):** ${{ github.event.schedule || github.run_started_at }}
+
+            Please investigate the outage.
